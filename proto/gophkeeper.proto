@@ -1,0 +1,62 @@
+syntax = "proto3";
+
+package gophkeeper;
+
+import "google/protobuf/empty.proto";
+
+option go_package = ".;";
+
+message DataRecord {
+  string type = 1;
+  bytes data = 2;
+  string meta = 3;
+}
+
+message AuthRequest {
+  string username = 1;
+  string password = 2;
+}
+
+message AuthResponse {
+  string token = 1;
+}
+
+message StoreRequest {
+  string token = 1;
+  DataRecord record = 2;
+}
+
+message StoreResponse {
+  string id = 1;
+}
+
+message RetrieveRequest {
+  string token = 1;
+  string id = 2;
+}
+
+message RetrieveResponse {
+  DataRecord record = 1;
+}
+
+message ListRequest {
+  string token = 1;
+}
+
+message ListResponse {
+  repeated DataRecord records = 1;
+}
+
+message DeleteRequest {
+  string token = 1;
+  string id = 2;
+}
+
+service GophKeeper {
+  rpc Register (AuthRequest) returns (AuthResponse);
+  rpc Login (AuthRequest) returns (AuthResponse);
+  rpc StoreData (StoreRequest) returns (StoreResponse);
+  rpc RetrieveData (RetrieveRequest) returns (RetrieveResponse);
+  rpc ListData (ListRequest) returns (ListResponse);
+  rpc DeleteData (DeleteRequest) returns (google.protobuf.Empty);
+}
