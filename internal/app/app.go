@@ -55,8 +55,20 @@ func (s *GophKeeperServer) StoreData(ctx context.Context, req *pb.StoreRequest) 
 	return &pb.StoreResponse{Id: int64(id)}, status.Error(codes.OK, "OK")
 }
 
-func (s *GophKeeperServer) RetrieveData(ctx context.Context, req *pb.RetrieveRequest) (*pb.RetrieveResponse, error) {
+func (s *GophKeeperServer) UpdateData(ctx context.Context, req *pb.UpdateResponse) (*emptypb.Empty, error) {
 	return nil, nil
+}
+func (s *GophKeeperServer) RetrieveData(ctx context.Context, req *pb.RetrieveRequest) (*pb.RetrieveResponse, error) {
+	record, err := s.handlers.RetrieveData(ctx, req.Token, int(req.Id))
+	if errors.Is(err, fmt.Errorf("unauthenticated")) {
+		return nil, status.Error(codes.Unauthenticated, "no valid token")
+	} else if errors.Is(err, fmt.Errorf("access denied")) {
+		return nil, status.Error(codes.PermissionDenied, "access denied")
+	} else if errors.Is(err, fmt.Errorf("not found")) {
+		return nil, status.Error(codes.NotFound, "not found")
+	}
+
+	return &pb.RetrieveResponse{Record: &pb.DataRecord{Type: record.TypeRecord, Data: record.Data, Meta: record.Meta}}, status.Error(codes.OK, "OK")
 }
 func (s *GophKeeperServer) ListData(ctx context.Context, req *pb.ListRequest) (*pb.ListResponse, error) {
 	return nil, nil

@@ -38,7 +38,7 @@ message UpdateResponse{
 
 message RetrieveRequest {
   string token = 1;
-  string id = 2;
+  int64 id = 2;
 }
 
 message RetrieveResponse {

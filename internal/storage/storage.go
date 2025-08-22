@@ -2,8 +2,10 @@ package storage
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
+	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/sinfirst/GophKeeper/internal/config"
 	"github.com/sinfirst/GophKeeper/internal/models"
@@ -80,4 +82,23 @@ func (p *PGDB) StoreDataToDB(ctx context.Context, record models.Record, username
 	}
 	p.idData++
 	return p.idData - 1, nil
+}
+
+func (p *PGDB) RetrieveDataFromDB(ctx context.Context, id int, username string) (models.Record, error) {
+	var record models.Record
+	var usernameFromBD string
+
+	query := `SELECT type_record, user_data, meta, username FROM records WHERE id = $1`
+	row := p.db.QueryRow(ctx, query, id)
+	err := row.Scan(&record.TypeRecord, &record.Data, &record.Meta, &username)
+	if usernameFromBD != username {
+		return models.Record{}, fmt.Errorf("access denied")
+	}
+	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return models.Record{}, fmt.Errorf("not found")
+		}
+		return models.Record{}, err
+	}
+	return record, nil
 }

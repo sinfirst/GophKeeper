@@ -17,6 +17,7 @@ type Storage interface {
 	AddUserToDB(ctx context.Context, username, password string) error
 	GetUserPassword(ctx context.Context, username string) (string, error)
 	StoreDataToDB(ctx context.Context, record models.Record, username string) (int, error)
+	RetrieveDataFromDB(ctx context.Context, id int, username string) (models.Record, error)
 }
 
 type Handler struct {
@@ -86,4 +87,12 @@ func (h *Handler) StoreData(ctx context.Context, token string, record models.Rec
 		return 0, fmt.Errorf("unauthenticated")
 	}
 	return h.storage.StoreDataToDB(ctx, record, username)
+}
+
+func (h *Handler) RetrieveData(ctx context.Context, token string, id int) (models.Record, error) {
+	username, err := auth.CheckToken(token)
+	if err != nil {
+		return models.Record{}, fmt.Errorf("unauthenticated")
+	}
+	return h.storage.RetrieveDataFromDB(ctx, id, username)
 }
