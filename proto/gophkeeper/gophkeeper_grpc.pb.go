@@ -23,6 +23,7 @@ const (
 	GophKeeper_Register_FullMethodName     = "/gophkeeper.GophKeeper/Register"
 	GophKeeper_Login_FullMethodName        = "/gophkeeper.GophKeeper/Login"
 	GophKeeper_StoreData_FullMethodName    = "/gophkeeper.GophKeeper/StoreData"
+	GophKeeper_UpdateData_FullMethodName   = "/gophkeeper.GophKeeper/UpdateData"
 	GophKeeper_RetrieveData_FullMethodName = "/gophkeeper.GophKeeper/RetrieveData"
 	GophKeeper_ListData_FullMethodName     = "/gophkeeper.GophKeeper/ListData"
 	GophKeeper_DeleteData_FullMethodName   = "/gophkeeper.GophKeeper/DeleteData"
@@ -35,6 +36,7 @@ type GophKeeperClient interface {
 	Register(ctx context.Context, in *AuthRequest, opts ...grpc.CallOption) (*AuthResponse, error)
 	Login(ctx context.Context, in *AuthRequest, opts ...grpc.CallOption) (*AuthResponse, error)
 	StoreData(ctx context.Context, in *StoreRequest, opts ...grpc.CallOption) (*StoreResponse, error)
+	UpdateData(ctx context.Context, in *UpdateResponse, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	RetrieveData(ctx context.Context, in *RetrieveRequest, opts ...grpc.CallOption) (*RetrieveResponse, error)
 	ListData(ctx context.Context, in *ListRequest, opts ...grpc.CallOption) (*ListResponse, error)
 	DeleteData(ctx context.Context, in *DeleteRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
@@ -78,6 +80,16 @@ func (c *gophKeeperClient) StoreData(ctx context.Context, in *StoreRequest, opts
 	return out, nil
 }
 
+func (c *gophKeeperClient) UpdateData(ctx context.Context, in *UpdateResponse, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, GophKeeper_UpdateData_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *gophKeeperClient) RetrieveData(ctx context.Context, in *RetrieveRequest, opts ...grpc.CallOption) (*RetrieveResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(RetrieveResponse)
@@ -115,6 +127,7 @@ type GophKeeperServer interface {
 	Register(context.Context, *AuthRequest) (*AuthResponse, error)
 	Login(context.Context, *AuthRequest) (*AuthResponse, error)
 	StoreData(context.Context, *StoreRequest) (*StoreResponse, error)
+	UpdateData(context.Context, *UpdateResponse) (*emptypb.Empty, error)
 	RetrieveData(context.Context, *RetrieveRequest) (*RetrieveResponse, error)
 	ListData(context.Context, *ListRequest) (*ListResponse, error)
 	DeleteData(context.Context, *DeleteRequest) (*emptypb.Empty, error)
@@ -136,6 +149,9 @@ func (UnimplementedGophKeeperServer) Login(context.Context, *AuthRequest) (*Auth
 }
 func (UnimplementedGophKeeperServer) StoreData(context.Context, *StoreRequest) (*StoreResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method StoreData not implemented")
+}
+func (UnimplementedGophKeeperServer) UpdateData(context.Context, *UpdateResponse) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateData not implemented")
 }
 func (UnimplementedGophKeeperServer) RetrieveData(context.Context, *RetrieveRequest) (*RetrieveResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RetrieveData not implemented")
@@ -221,6 +237,24 @@ func _GophKeeper_StoreData_Handler(srv interface{}, ctx context.Context, dec fun
 	return interceptor(ctx, in, info, handler)
 }
 
+func _GophKeeper_UpdateData_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateResponse)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(GophKeeperServer).UpdateData(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: GophKeeper_UpdateData_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(GophKeeperServer).UpdateData(ctx, req.(*UpdateResponse))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _GophKeeper_RetrieveData_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(RetrieveRequest)
 	if err := dec(in); err != nil {
@@ -293,6 +327,10 @@ var GophKeeper_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "StoreData",
 			Handler:    _GophKeeper_StoreData_Handler,
+		},
+		{
+			MethodName: "UpdateData",
+			Handler:    _GophKeeper_UpdateData_Handler,
 		},
 		{
 			MethodName: "RetrieveData",

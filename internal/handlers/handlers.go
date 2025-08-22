@@ -9,11 +9,14 @@ import (
 
 	"github.com/sinfirst/GophKeeper/internal/config"
 	"github.com/sinfirst/GophKeeper/internal/middleware/auth"
+	"github.com/sinfirst/GophKeeper/internal/models"
 )
 
 type Storage interface {
 	CheckUsernameExists(ctx context.Context, username string) (bool, error)
 	AddUserToDB(ctx context.Context, username, password string) error
+	GetUserPassword(ctx context.Context, username string) (string, error)
+	StoreDataToDB(ctx context.Context, record models.Record, username string) (int, error)
 }
 
 type Handler struct {
@@ -60,5 +63,27 @@ func (h *Handler) Register(ctx context.Context, login, password string) (string,
 }
 
 func (h *Handler) Login(ctx context.Context, login, password string) (string, error) {
-	return "", nil
+	passwordFromBD, err := h.storage.GetUserPassword(ctx, login)
+	if err != nil {
+		return "", fmt.Errorf("unauthenticated")
+	}
+	err = bcrypt.CompareHashAndPassword([]byte(passwordFromBD), []byte(password))
+	if err != nil {
+		return "", fmt.Errorf("unauthenticated")
+	}
+	token, err := auth.BuildJWTString(login)
+	if err != nil {
+		h.logger.Errorf("err: %v", err)
+		return "", err
+	}
+
+	return token, nil
+}
+
+func (h *Handler) StoreData(ctx context.Context, token string, record models.Record) (int, error) {
+	username, err := auth.CheckToken(token)
+	if err != nil {
+		return 0, fmt.Errorf("unauthenticated")
+	}
+	return h.storage.StoreDataToDB(ctx, record, username)
 }

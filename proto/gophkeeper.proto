@@ -27,7 +27,13 @@ message StoreRequest {
 }
 
 message StoreResponse {
-  string id = 1;
+  int64 id = 1;
+}
+
+message UpdateResponse{
+  string token = 1;
+  string id = 2;
+  bytes data = 3;
 }
 
 message RetrieveRequest {
@@ -56,6 +62,7 @@ service GophKeeper {
   rpc Register (AuthRequest) returns (AuthResponse);
   rpc Login (AuthRequest) returns (AuthResponse);
   rpc StoreData (StoreRequest) returns (StoreResponse);
+  rpc UpdateData(UpdateResponse) returns (google.protobuf.Empty);
   rpc RetrieveData (RetrieveRequest) returns (RetrieveResponse);
   rpc ListData (ListRequest) returns (ListResponse);
   rpc DeleteData (DeleteRequest) returns (google.protobuf.Empty);
