@@ -10,6 +10,7 @@ const (
 )
 
 type Record struct {
+	Id         int
 	TypeRecord string
 	Data       []byte
 	Meta       string

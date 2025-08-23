@@ -32,7 +32,7 @@ message StoreResponse {
 
 message UpdateResponse{
   string token = 1;
-  string id = 2;
+  int64 id = 2;
   bytes data = 3;
 }
 

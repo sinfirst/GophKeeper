@@ -26,10 +26,8 @@ func NewGophKeeperServer(handlers handlers.Handler, logger zap.SugaredLogger) pb
 
 func (s *GophKeeperServer) Register(ctx context.Context, req *pb.AuthRequest) (*pb.AuthResponse, error) {
 	token, err := s.handlers.Register(ctx, req.Username, req.Password)
-	if errors.Is(err, fmt.Errorf("conflict")) {
-		return nil, status.Error(codes.AlreadyExists, "username already exist")
-	} else if err != nil {
-		return nil, status.Error(codes.Internal, "Server problem")
+	if err = errorHandler(err); err != nil {
+		return nil, err
 	}
 	return &pb.AuthResponse{Token: token}, status.Error(codes.OK, "OK")
 
@@ -37,42 +35,58 @@ func (s *GophKeeperServer) Register(ctx context.Context, req *pb.AuthRequest) (*
 
 func (s *GophKeeperServer) Login(ctx context.Context, req *pb.AuthRequest) (*pb.AuthResponse, error) {
 	token, err := s.handlers.Login(ctx, req.Username, req.Password)
-	if errors.Is(err, fmt.Errorf("unauthenticated")) {
-		return nil, status.Error(codes.Unauthenticated, "uncorrect login or password")
-	} else if err != nil {
-		return nil, status.Error(codes.Internal, "Server problem")
+	if err = errorHandler(err); err != nil {
+		return nil, err
 	}
 	return &pb.AuthResponse{Token: token}, status.Error(codes.OK, "OK")
 }
 
 func (s *GophKeeperServer) StoreData(ctx context.Context, req *pb.StoreRequest) (*pb.StoreResponse, error) {
 	id, err := s.handlers.StoreData(ctx, req.Token, models.Record{TypeRecord: req.Record.Type, Data: req.Record.Data, Meta: req.Record.Meta})
-	if errors.Is(err, fmt.Errorf("unauthenticated")) {
-		return nil, status.Error(codes.Unauthenticated, "no valid token")
-	} else if err != nil {
-		return nil, status.Error(codes.Internal, "Server problem")
+	if err = errorHandler(err); err != nil {
+		return nil, err
 	}
+
 	return &pb.StoreResponse{Id: int64(id)}, status.Error(codes.OK, "OK")
 }
 
-func (s *GophKeeperServer) UpdateData(ctx context.Context, req *pb.UpdateResponse) (*emptypb.Empty, error) {
-	return nil, nil
-}
 func (s *GophKeeperServer) RetrieveData(ctx context.Context, req *pb.RetrieveRequest) (*pb.RetrieveResponse, error) {
 	record, err := s.handlers.RetrieveData(ctx, req.Token, int(req.Id))
-	if errors.Is(err, fmt.Errorf("unauthenticated")) {
-		return nil, status.Error(codes.Unauthenticated, "no valid token")
-	} else if errors.Is(err, fmt.Errorf("access denied")) {
-		return nil, status.Error(codes.PermissionDenied, "access denied")
-	} else if errors.Is(err, fmt.Errorf("not found")) {
-		return nil, status.Error(codes.NotFound, "not found")
+	if err = errorHandler(err); err != nil {
+		return nil, err
 	}
 
 	return &pb.RetrieveResponse{Record: &pb.DataRecord{Type: record.TypeRecord, Data: record.Data, Meta: record.Meta}}, status.Error(codes.OK, "OK")
 }
+func (s *GophKeeperServer) UpdateData(ctx context.Context, req *pb.UpdateResponse) (*emptypb.Empty, error) {
+	err := s.handlers.UpdateData(ctx, req.Token, int(req.Id), req.Data)
+	if err = errorHandler(err); err != nil {
+		return nil, err
+	}
+	return nil, status.Error(codes.OK, "OK")
+}
 func (s *GophKeeperServer) ListData(ctx context.Context, req *pb.ListRequest) (*pb.ListResponse, error) {
-	return nil, nil
+	records, err := s.handlers.ListData(ctx, req.Token)
+	if err = errorHandler(err); err != nil {
+		return nil, err
+	}
+
 }
 func (s *GophKeeperServer) DeleteData(ctx context.Context, req *pb.DeleteRequest) (*emptypb.Empty, error) {
 	return nil, nil
+}
+
+func errorHandler(err error) error {
+	if errors.Is(err, fmt.Errorf("unauthenticated")) {
+		return status.Error(codes.Unauthenticated, "unauthenticated")
+	} else if errors.Is(err, fmt.Errorf("conflict")) {
+		return status.Error(codes.AlreadyExists, "conflict")
+	} else if errors.Is(err, fmt.Errorf("access denied")) {
+		return status.Error(codes.PermissionDenied, "access denied")
+	} else if errors.Is(err, fmt.Errorf("not found")) {
+		return status.Error(codes.NotFound, "not found")
+	} else if err != nil {
+		return status.Error(codes.Internal, "Server problem")
+	}
+	return nil
 }

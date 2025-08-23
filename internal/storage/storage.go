@@ -84,16 +84,26 @@ func (p *PGDB) StoreDataToDB(ctx context.Context, record models.Record, username
 	return p.idData - 1, nil
 }
 
-func (p *PGDB) RetrieveDataFromDB(ctx context.Context, id int, username string) (models.Record, error) {
-	var record models.Record
-	var usernameFromBD string
-
-	query := `SELECT type_record, user_data, meta, username FROM records WHERE id = $1`
+func (p *PGDB) GetUserByDataID(ctx context.Context, id int) (string, error) {
+	var username string
+	query := `SELECT username FROM records WHERE id = $1`
 	row := p.db.QueryRow(ctx, query, id)
-	err := row.Scan(&record.TypeRecord, &record.Data, &record.Meta, &username)
-	if usernameFromBD != username {
-		return models.Record{}, fmt.Errorf("access denied")
+	err := row.Scan(&username)
+	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return "", fmt.Errorf("not found")
+		}
+		return "", err
 	}
+	return username, nil
+
+}
+func (p *PGDB) RetrieveDataFromDB(ctx context.Context, id int) (models.Record, error) {
+	var record models.Record
+
+	query := `SELECT type_record, user_data, meta FROM records WHERE id = $1`
+	row := p.db.QueryRow(ctx, query, id)
+	err := row.Scan(&record.TypeRecord, &record.Data, &record.Meta)
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
 			return models.Record{}, fmt.Errorf("not found")
@@ -101,4 +111,44 @@ func (p *PGDB) RetrieveDataFromDB(ctx context.Context, id int, username string) 
 		return models.Record{}, err
 	}
 	return record, nil
+}
+
+func (p *PGDB) UpdateDataInDB(ctx context.Context, id int) error {
+	query := `UPDATE records SET user_data = $1
+			WHERE id = $2`
+	result, err := p.db.Exec(ctx, query, id)
+	if err != nil {
+		return err
+	}
+
+	if result.RowsAffected() == 0 {
+		return fmt.Errorf("not found")
+	}
+
+	return nil
+}
+
+func (p *PGDB) GetListData(ctx context.Context, username string) ([]models.Record, error) {
+	var records []models.Record
+	query := `SELECT id, type_record, user_data, meta 
+			FROM records WHERE username = $1`
+	rows, err := p.db.Query(ctx, query, username)
+
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var record models.Record
+
+		err := rows.Scan(&record.Id, &record.TypeRecord, &record.Data, &record.Meta)
+		if err != nil {
+			return nil, err
+		}
+
+		records = append(records, record)
+	}
+
+	return records, nil
 }

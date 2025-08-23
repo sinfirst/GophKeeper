@@ -17,7 +17,10 @@ type Storage interface {
 	AddUserToDB(ctx context.Context, username, password string) error
 	GetUserPassword(ctx context.Context, username string) (string, error)
 	StoreDataToDB(ctx context.Context, record models.Record, username string) (int, error)
-	RetrieveDataFromDB(ctx context.Context, id int, username string) (models.Record, error)
+	RetrieveDataFromDB(ctx context.Context, id int) (models.Record, error)
+	GetUserByDataID(ctx context.Context, id int) (string, error)
+	UpdateDataInDB(ctx context.Context, id int) error
+	GetListData(ctx context.Context, username string) ([]models.Record, error)
 }
 
 type Handler struct {
@@ -90,9 +93,42 @@ func (h *Handler) StoreData(ctx context.Context, token string, record models.Rec
 }
 
 func (h *Handler) RetrieveData(ctx context.Context, token string, id int) (models.Record, error) {
+	_, err := h.checkAccess(ctx, token, id)
+	if err != nil {
+		return models.Record{}, err
+	}
+	return h.storage.RetrieveDataFromDB(ctx, id)
+}
+
+func (h *Handler) UpdateData(ctx context.Context, token string, id int, data []byte) error {
+	_, err := h.checkAccess(ctx, token, id)
+	if err != nil {
+		return err
+	}
+	return h.storage.UpdateDataInDB(ctx, id)
+
+}
+
+func (h *Handler) ListData(ctx context.Context, token string) ([]models.Record, error) {
 	username, err := auth.CheckToken(token)
 	if err != nil {
-		return models.Record{}, fmt.Errorf("unauthenticated")
+		return nil, fmt.Errorf("unauthenticated")
 	}
-	return h.storage.RetrieveDataFromDB(ctx, id, username)
+	return h.storage.GetListData(ctx, username)
+}
+
+func (h *Handler) checkAccess(ctx context.Context, token string, id int) (string, error) {
+	username, err := auth.CheckToken(token)
+	if err != nil {
+		return username, fmt.Errorf("unauthenticated")
+	}
+
+	usernameFromBD, err := h.storage.GetUserByDataID(ctx, id)
+	if username != usernameFromBD {
+		return username, fmt.Errorf("access denied")
+	}
+	if err != nil {
+		return "", err
+	}
+	return username, nil
 }

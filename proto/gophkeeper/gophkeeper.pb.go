@@ -277,7 +277,7 @@ func (x *StoreResponse) GetId() int64 {
 type UpdateResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Token         string                 `protobuf:"bytes,1,opt,name=token,proto3" json:"token,omitempty"`
-	Id            string                 `protobuf:"bytes,2,opt,name=id,proto3" json:"id,omitempty"`
+	Id            int64                  `protobuf:"varint,2,opt,name=id,proto3" json:"id,omitempty"`
 	Data          []byte                 `protobuf:"bytes,3,opt,name=data,proto3" json:"data,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -320,11 +320,11 @@ func (x *UpdateResponse) GetToken() string {
 	return ""
 }
 
-func (x *UpdateResponse) GetId() string {
+func (x *UpdateResponse) GetId() int64 {
 	if x != nil {
 		return x.Id
 	}
-	return ""
+	return 0
 }
 
 func (x *UpdateResponse) GetData() []byte {
@@ -593,7 +593,7 @@ const file_gophkeeper_proto_rawDesc = "" +
 	"\x02id\x18\x01 \x01(\x03R\x02id\"J\n" +
 	"\x0eUpdateResponse\x12\x14\n" +
 	"\x05token\x18\x01 \x01(\tR\x05token\x12\x0e\n" +
-	"\x02id\x18\x02 \x01(\tR\x02id\x12\x12\n" +
+	"\x02id\x18\x02 \x01(\x03R\x02id\x12\x12\n" +
 	"\x04data\x18\x03 \x01(\fR\x04data\"7\n" +
 	"\x0fRetrieveRequest\x12\x14\n" +
 	"\x05token\x18\x01 \x01(\tR\x05token\x12\x0e\n" +
