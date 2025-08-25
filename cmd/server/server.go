@@ -19,7 +19,7 @@ func main() {
 	config := config.NewConfig()
 	logger := logging.NewLogger()
 	storage := storage.NewPGDB(config, logger)
-	handlers := handlers.NewHandler(storage, config, logger)
+	handlers := handlers.NewHandler(storage, config)
 	grpcServer := grpc.NewServer(
 		grpc.UnaryInterceptor(logging.LoggingUnaryInterceptor(logger)),
 	)

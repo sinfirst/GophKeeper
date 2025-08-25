@@ -24,9 +24,10 @@ const (
 
 type DataRecord struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Type          string                 `protobuf:"bytes,1,opt,name=type,proto3" json:"type,omitempty"`
-	Data          []byte                 `protobuf:"bytes,2,opt,name=data,proto3" json:"data,omitempty"`
-	Meta          string                 `protobuf:"bytes,3,opt,name=meta,proto3" json:"meta,omitempty"`
+	Id            int64                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	Type          string                 `protobuf:"bytes,2,opt,name=type,proto3" json:"type,omitempty"`
+	Data          []byte                 `protobuf:"bytes,3,opt,name=data,proto3" json:"data,omitempty"`
+	Meta          string                 `protobuf:"bytes,4,opt,name=meta,proto3" json:"meta,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -59,6 +60,13 @@ func (x *DataRecord) ProtoReflect() protoreflect.Message {
 // Deprecated: Use DataRecord.ProtoReflect.Descriptor instead.
 func (*DataRecord) Descriptor() ([]byte, []int) {
 	return file_gophkeeper_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *DataRecord) GetId() int64 {
+	if x != nil {
+		return x.Id
+	}
+	return 0
 }
 
 func (x *DataRecord) GetType() string {
@@ -521,7 +529,7 @@ func (x *ListResponse) GetRecords() []*DataRecord {
 type DeleteRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Token         string                 `protobuf:"bytes,1,opt,name=token,proto3" json:"token,omitempty"`
-	Id            string                 `protobuf:"bytes,2,opt,name=id,proto3" json:"id,omitempty"`
+	Id            int64                  `protobuf:"varint,2,opt,name=id,proto3" json:"id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -563,11 +571,11 @@ func (x *DeleteRequest) GetToken() string {
 	return ""
 }
 
-func (x *DeleteRequest) GetId() string {
+func (x *DeleteRequest) GetId() int64 {
 	if x != nil {
 		return x.Id
 	}
-	return ""
+	return 0
 }
 
 var File_gophkeeper_proto protoreflect.FileDescriptor
@@ -575,12 +583,13 @@ var File_gophkeeper_proto protoreflect.FileDescriptor
 const file_gophkeeper_proto_rawDesc = "" +
 	"\n" +
 	"\x10gophkeeper.proto\x12\n" +
-	"gophkeeper\x1a\x1bgoogle/protobuf/empty.proto\"H\n" +
+	"gophkeeper\x1a\x1bgoogle/protobuf/empty.proto\"X\n" +
 	"\n" +
-	"DataRecord\x12\x12\n" +
-	"\x04type\x18\x01 \x01(\tR\x04type\x12\x12\n" +
-	"\x04data\x18\x02 \x01(\fR\x04data\x12\x12\n" +
-	"\x04meta\x18\x03 \x01(\tR\x04meta\"E\n" +
+	"DataRecord\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\x03R\x02id\x12\x12\n" +
+	"\x04type\x18\x02 \x01(\tR\x04type\x12\x12\n" +
+	"\x04data\x18\x03 \x01(\fR\x04data\x12\x12\n" +
+	"\x04meta\x18\x04 \x01(\tR\x04meta\"E\n" +
 	"\vAuthRequest\x12\x1a\n" +
 	"\busername\x18\x01 \x01(\tR\busername\x12\x1a\n" +
 	"\bpassword\x18\x02 \x01(\tR\bpassword\"$\n" +
@@ -606,7 +615,7 @@ const file_gophkeeper_proto_rawDesc = "" +
 	"\arecords\x18\x01 \x03(\v2\x16.gophkeeper.DataRecordR\arecords\"5\n" +
 	"\rDeleteRequest\x12\x14\n" +
 	"\x05token\x18\x01 \x01(\tR\x05token\x12\x0e\n" +
-	"\x02id\x18\x02 \x01(\tR\x02id2\xd6\x03\n" +
+	"\x02id\x18\x02 \x01(\x03R\x02id2\xd6\x03\n" +
 	"\n" +
 	"GophKeeper\x12=\n" +
 	"\bRegister\x12\x17.gophkeeper.AuthRequest\x1a\x18.gophkeeper.AuthResponse\x12:\n" +

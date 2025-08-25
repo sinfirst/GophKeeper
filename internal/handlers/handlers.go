@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 
-	"go.uber.org/zap"
 	"golang.org/x/crypto/bcrypt"
 
 	"github.com/sinfirst/GophKeeper/internal/config"
@@ -21,23 +20,23 @@ type Storage interface {
 	GetUserByDataID(ctx context.Context, id int) (string, error)
 	UpdateDataInDB(ctx context.Context, id int) error
 	GetListData(ctx context.Context, username string) ([]models.Record, error)
+	CheckRecordExist(ctx context.Context, id int) (bool, error)
+	DeleteDataFromDB(ctx context.Context, id int) error
 }
 
 type Handler struct {
 	storage Storage
 	config  config.Config
-	logger  zap.SugaredLogger
 }
 
-func NewHandler(storage Storage, config config.Config, logger zap.SugaredLogger) Handler {
-	handler := Handler{storage: storage, config: config, logger: logger}
+func NewHandler(storage Storage, config config.Config) Handler {
+	handler := Handler{storage: storage, config: config}
 	return handler
 }
 
 func (h *Handler) Register(ctx context.Context, login, password string) (string, error) {
 	exist, err := h.storage.CheckUsernameExists(ctx, login)
 	if err != nil {
-		h.logger.Errorf("err: %v", err)
 		return "", err
 	}
 
@@ -47,19 +46,16 @@ func (h *Handler) Register(ctx context.Context, login, password string) (string,
 
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
-		h.logger.Errorf("err: %v", err)
 		return "", err
 	}
 
 	err = h.storage.AddUserToDB(ctx, login, string(hashedPassword))
 	if err != nil {
-		h.logger.Errorf("err: %v", err)
 		return "", err
 	}
 
 	token, err := auth.BuildJWTString(login)
 	if err != nil {
-		h.logger.Errorf("err: %v", err)
 		return "", err
 	}
 
@@ -77,7 +73,6 @@ func (h *Handler) Login(ctx context.Context, login, password string) (string, er
 	}
 	token, err := auth.BuildJWTString(login)
 	if err != nil {
-		h.logger.Errorf("err: %v", err)
 		return "", err
 	}
 
@@ -115,6 +110,21 @@ func (h *Handler) ListData(ctx context.Context, token string) ([]models.Record, 
 		return nil, fmt.Errorf("unauthenticated")
 	}
 	return h.storage.GetListData(ctx, username)
+}
+
+func (h *Handler) DeleteData(ctx context.Context, token string, id int) error {
+	_, err := h.checkAccess(ctx, token, id)
+	if err != nil {
+		return err
+	}
+	exist, err := h.storage.CheckRecordExist(ctx, id)
+	if err != nil {
+		return err
+	}
+	if exist {
+		return fmt.Errorf("not found")
+	}
+	return h.storage.DeleteDataFromDB(ctx, id)
 }
 
 func (h *Handler) checkAccess(ctx context.Context, token string, id int) (string, error) {

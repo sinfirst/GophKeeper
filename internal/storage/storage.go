@@ -152,3 +152,28 @@ func (p *PGDB) GetListData(ctx context.Context, username string) ([]models.Recor
 
 	return records, nil
 }
+
+func (p *PGDB) CheckRecordExist(ctx context.Context, id int) (bool, error) {
+	var exists bool
+	query := `
+		SELECT EXISTS (
+			SELECT 1 FROM records WHERE id = $1
+		)`
+	err := p.db.QueryRow(ctx, query, id).Scan(&exists)
+	if err != nil {
+		return false, fmt.Errorf("checking user existence: %w", err)
+	}
+	return exists, nil
+}
+func (p *PGDB) DeleteDataFromDB(ctx context.Context, id int) error {
+	query := `DELETE FROM records
+				WHERE id = $1`
+
+	_, err := p.db.Exec(ctx, query, id)
+
+	if err != nil {
+		p.logger.Errorw("Problem with deleting from db: ", err)
+		return err
+	}
+	return nil
+}

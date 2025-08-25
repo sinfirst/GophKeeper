@@ -7,9 +7,10 @@ import "google/protobuf/empty.proto";
 option go_package = ".;";
 
 message DataRecord {
-  string type = 1;
-  bytes data = 2;
-  string meta = 3;
+  int64 id = 1;
+  string type = 2;
+  bytes data = 3;
+  string meta = 4;
 }
 
 message AuthRequest {
@@ -55,7 +56,7 @@ message ListResponse {
 
 message DeleteRequest {
   string token = 1;
-  string id = 2;
+  int64 id = 2;
 }
 
 service GophKeeper {
