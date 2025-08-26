@@ -2,11 +2,16 @@ package storage
 
 import (
 	"context"
+	"database/sql"
 	"errors"
 	"fmt"
+	"path/filepath"
+	"runtime"
 
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
+	_ "github.com/jackc/pgx/v5/stdlib"
+	"github.com/pressly/goose/v3"
 	"github.com/sinfirst/GophKeeper/internal/config"
 	"github.com/sinfirst/GophKeeper/internal/models"
 	"go.uber.org/zap"
@@ -173,6 +178,29 @@ func (p *PGDB) DeleteDataFromDB(ctx context.Context, id int) error {
 
 	if err != nil {
 		p.logger.Errorw("Problem with deleting from db: ", err)
+		return err
+	}
+	return nil
+}
+
+// InitMigrations инициализация миграций
+func InitMigrations(conf config.Config, logger zap.SugaredLogger) error {
+	logger.Infow("Start migrations")
+	db, err := sql.Open("pgx", conf.DatabaseDsn)
+
+	if err != nil {
+		logger.Errorw("Error with connection to DB: ", err)
+		return err
+	}
+
+	defer db.Close()
+
+	_, filename, _, _ := runtime.Caller(0)
+	migrationsPath := filepath.Join(filepath.Dir(filename), "migrations")
+
+	err = goose.Up(db, migrationsPath)
+	if err != nil {
+		logger.Errorw("Error with migrations: ", err)
 		return err
 	}
 	return nil

@@ -15,3 +15,8 @@ type Record struct {
 	Data       []byte
 	Meta       string
 }
+
+type LoginJSON struct {
+	Login    string `json:"login"`
+	Password string `json:"password"`
+}

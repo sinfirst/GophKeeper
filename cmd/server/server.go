@@ -18,8 +18,12 @@ import (
 func main() {
 	config := config.NewConfig()
 	logger := logging.NewLogger()
-	storage := storage.NewPGDB(config, logger)
-	handlers := handlers.NewHandler(storage, config)
+	stg := storage.NewPGDB(config, logger)
+	handlers := handlers.NewHandler(stg, config)
+	err := storage.InitMigrations(config, logger)
+	if err != nil {
+		logger.Fatalw("can't init migrations", err)
+	}
 	grpcServer := grpc.NewServer(
 		grpc.UnaryInterceptor(logging.LoggingUnaryInterceptor(logger)),
 	)

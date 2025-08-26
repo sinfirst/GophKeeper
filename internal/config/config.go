@@ -12,7 +12,7 @@ var TokenExp = time.Hour * 12
 var SecretKey = "supersecretkey"
 
 type Config struct {
-	Host        string `env:"BASE_URL"`
+	Host        string `env:"BASE_HOST"`
 	DatabaseDsn string `env:"DATABASE_URI"`
 }
 
@@ -25,7 +25,7 @@ func NewConfig() Config {
 	}
 
 	if conf.DatabaseDsn == "" {
-		flag.StringVar(&conf.DatabaseDsn, "d", "postgres://postgres:1@localhost:5432/postgres", "database dsn")
+		flag.StringVar(&conf.DatabaseDsn, "d", "postgres://postgres:qwerty12345@localhost:5432/postgres", "database dsn")
 	}
 
 	flag.StringVar(&conf.Host, "a", ":3200", "host")
