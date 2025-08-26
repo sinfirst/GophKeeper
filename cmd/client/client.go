@@ -5,30 +5,21 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"log"
+	"os"
 
-	"github.com/sinfirst/GophKeeper/internal/config"
-	"github.com/sinfirst/GophKeeper/internal/middleware/logging"
 	"github.com/sinfirst/GophKeeper/internal/models"
+	"github.com/sinfirst/GophKeeper/internal/tui"
 	pb "github.com/sinfirst/GophKeeper/proto/gophkeeper"
-
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials/insecure"
 )
 
 func main() {
-	config := config.NewConfig()
-	logger := logging.NewLogger()
-	conn, err := grpc.NewClient(config.Host, grpc.WithTransportCredentials(insecure.NewCredentials()))
-	if err != nil {
-		logger.Fatalf("failed to up client: %v", err)
+	app := tui.NewAuthApp()
+	if err := app.Run(); err != nil {
+		log.Fatal(err)
+		os.Exit(1)
 	}
-	defer conn.Close()
-
-	c := pb.NewGophKeeperClient(conn)
-
-	TestFunc(c)
 }
-
 func TestFunc(c pb.GophKeeperClient) {
 	token, err := c.Register(context.Background(), &pb.AuthRequest{Username: "sinfirst2", Password: "qwerty12345"})
 	if err != nil {
