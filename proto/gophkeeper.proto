@@ -6,6 +6,11 @@ import "google/protobuf/empty.proto";
 
 option go_package = ".;";
 
+message Version{
+  string version = 1;
+  string date = 2;
+}
+
 message DataRecord {
   int64 id = 1;
   string type = 2;
@@ -59,6 +64,10 @@ message DeleteRequest {
   int64 id = 2;
 }
 
+message GetVersionResponse {
+  Version ver = 1;
+}
+
 service GophKeeper {
   rpc Register (AuthRequest) returns (AuthResponse);
   rpc Login (AuthRequest) returns (AuthResponse);
@@ -67,4 +76,5 @@ service GophKeeper {
   rpc RetrieveData (RetrieveRequest) returns (RetrieveResponse);
   rpc ListData (ListRequest) returns (ListResponse);
   rpc DeleteData (DeleteRequest) returns (google.protobuf.Empty);
+  rpc GetVersion (google.protobuf.Empty) returns (GetVersionResponse);
 }

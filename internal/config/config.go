@@ -6,10 +6,19 @@ import (
 	"time"
 
 	"github.com/caarlos0/env"
+	"github.com/sinfirst/GophKeeper/internal/models"
 )
 
-var TokenExp = time.Hour * 12
-var SecretKey = "supersecretkey"
+var (
+	TokenSetting models.TokenSettings = models.TokenSettings{
+		TokenExp:  time.Hour * 12,
+		SecretKey: "supersecretkey",
+	}
+	VersionBuild models.VersionBuild = models.VersionBuild{
+		Version: "0.1 beta",
+		Date:    "28.08.2025",
+	}
+)
 
 type Config struct {
 	Host        string `env:"BASE_HOST"`

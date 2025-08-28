@@ -14,7 +14,7 @@ import (
 )
 
 func main() {
-	app := tui.NewAuthApp()
+	app := tui.NewApp()
 	if err := app.Run(); err != nil {
 		log.Fatal(err)
 		os.Exit(1)

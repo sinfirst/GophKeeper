@@ -27,6 +27,7 @@ const (
 	GophKeeper_RetrieveData_FullMethodName = "/gophkeeper.GophKeeper/RetrieveData"
 	GophKeeper_ListData_FullMethodName     = "/gophkeeper.GophKeeper/ListData"
 	GophKeeper_DeleteData_FullMethodName   = "/gophkeeper.GophKeeper/DeleteData"
+	GophKeeper_GetVersion_FullMethodName   = "/gophkeeper.GophKeeper/GetVersion"
 )
 
 // GophKeeperClient is the client API for GophKeeper service.
@@ -40,6 +41,7 @@ type GophKeeperClient interface {
 	RetrieveData(ctx context.Context, in *RetrieveRequest, opts ...grpc.CallOption) (*RetrieveResponse, error)
 	ListData(ctx context.Context, in *ListRequest, opts ...grpc.CallOption) (*ListResponse, error)
 	DeleteData(ctx context.Context, in *DeleteRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	GetVersion(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*GetVersionResponse, error)
 }
 
 type gophKeeperClient struct {
@@ -120,6 +122,16 @@ func (c *gophKeeperClient) DeleteData(ctx context.Context, in *DeleteRequest, op
 	return out, nil
 }
 
+func (c *gophKeeperClient) GetVersion(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*GetVersionResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetVersionResponse)
+	err := c.cc.Invoke(ctx, GophKeeper_GetVersion_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // GophKeeperServer is the server API for GophKeeper service.
 // All implementations must embed UnimplementedGophKeeperServer
 // for forward compatibility.
@@ -131,6 +143,7 @@ type GophKeeperServer interface {
 	RetrieveData(context.Context, *RetrieveRequest) (*RetrieveResponse, error)
 	ListData(context.Context, *ListRequest) (*ListResponse, error)
 	DeleteData(context.Context, *DeleteRequest) (*emptypb.Empty, error)
+	GetVersion(context.Context, *emptypb.Empty) (*GetVersionResponse, error)
 	mustEmbedUnimplementedGophKeeperServer()
 }
 
@@ -161,6 +174,9 @@ func (UnimplementedGophKeeperServer) ListData(context.Context, *ListRequest) (*L
 }
 func (UnimplementedGophKeeperServer) DeleteData(context.Context, *DeleteRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteData not implemented")
+}
+func (UnimplementedGophKeeperServer) GetVersion(context.Context, *emptypb.Empty) (*GetVersionResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetVersion not implemented")
 }
 func (UnimplementedGophKeeperServer) mustEmbedUnimplementedGophKeeperServer() {}
 func (UnimplementedGophKeeperServer) testEmbeddedByValue()                    {}
@@ -309,6 +325,24 @@ func _GophKeeper_DeleteData_Handler(srv interface{}, ctx context.Context, dec fu
 	return interceptor(ctx, in, info, handler)
 }
 
+func _GophKeeper_GetVersion_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(emptypb.Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(GophKeeperServer).GetVersion(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: GophKeeper_GetVersion_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(GophKeeperServer).GetVersion(ctx, req.(*emptypb.Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // GophKeeper_ServiceDesc is the grpc.ServiceDesc for GophKeeper service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -343,6 +377,10 @@ var GophKeeper_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteData",
 			Handler:    _GophKeeper_DeleteData_Handler,
+		},
+		{
+			MethodName: "GetVersion",
+			Handler:    _GophKeeper_GetVersion_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -22,6 +22,58 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+type Version struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Version       string                 `protobuf:"bytes,1,opt,name=version,proto3" json:"version,omitempty"`
+	Date          string                 `protobuf:"bytes,2,opt,name=date,proto3" json:"date,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *Version) Reset() {
+	*x = Version{}
+	mi := &file_gophkeeper_proto_msgTypes[0]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Version) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Version) ProtoMessage() {}
+
+func (x *Version) ProtoReflect() protoreflect.Message {
+	mi := &file_gophkeeper_proto_msgTypes[0]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Version.ProtoReflect.Descriptor instead.
+func (*Version) Descriptor() ([]byte, []int) {
+	return file_gophkeeper_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *Version) GetVersion() string {
+	if x != nil {
+		return x.Version
+	}
+	return ""
+}
+
+func (x *Version) GetDate() string {
+	if x != nil {
+		return x.Date
+	}
+	return ""
+}
+
 type DataRecord struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            int64                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
@@ -34,7 +86,7 @@ type DataRecord struct {
 
 func (x *DataRecord) Reset() {
 	*x = DataRecord{}
-	mi := &file_gophkeeper_proto_msgTypes[0]
+	mi := &file_gophkeeper_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -46,7 +98,7 @@ func (x *DataRecord) String() string {
 func (*DataRecord) ProtoMessage() {}
 
 func (x *DataRecord) ProtoReflect() protoreflect.Message {
-	mi := &file_gophkeeper_proto_msgTypes[0]
+	mi := &file_gophkeeper_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -59,7 +111,7 @@ func (x *DataRecord) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DataRecord.ProtoReflect.Descriptor instead.
 func (*DataRecord) Descriptor() ([]byte, []int) {
-	return file_gophkeeper_proto_rawDescGZIP(), []int{0}
+	return file_gophkeeper_proto_rawDescGZIP(), []int{1}
 }
 
 func (x *DataRecord) GetId() int64 {
@@ -100,7 +152,7 @@ type AuthRequest struct {
 
 func (x *AuthRequest) Reset() {
 	*x = AuthRequest{}
-	mi := &file_gophkeeper_proto_msgTypes[1]
+	mi := &file_gophkeeper_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -112,7 +164,7 @@ func (x *AuthRequest) String() string {
 func (*AuthRequest) ProtoMessage() {}
 
 func (x *AuthRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_gophkeeper_proto_msgTypes[1]
+	mi := &file_gophkeeper_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -125,7 +177,7 @@ func (x *AuthRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AuthRequest.ProtoReflect.Descriptor instead.
 func (*AuthRequest) Descriptor() ([]byte, []int) {
-	return file_gophkeeper_proto_rawDescGZIP(), []int{1}
+	return file_gophkeeper_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *AuthRequest) GetUsername() string {
@@ -151,7 +203,7 @@ type AuthResponse struct {
 
 func (x *AuthResponse) Reset() {
 	*x = AuthResponse{}
-	mi := &file_gophkeeper_proto_msgTypes[2]
+	mi := &file_gophkeeper_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -163,7 +215,7 @@ func (x *AuthResponse) String() string {
 func (*AuthResponse) ProtoMessage() {}
 
 func (x *AuthResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_gophkeeper_proto_msgTypes[2]
+	mi := &file_gophkeeper_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -176,7 +228,7 @@ func (x *AuthResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AuthResponse.ProtoReflect.Descriptor instead.
 func (*AuthResponse) Descriptor() ([]byte, []int) {
-	return file_gophkeeper_proto_rawDescGZIP(), []int{2}
+	return file_gophkeeper_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *AuthResponse) GetToken() string {
@@ -196,7 +248,7 @@ type StoreRequest struct {
 
 func (x *StoreRequest) Reset() {
 	*x = StoreRequest{}
-	mi := &file_gophkeeper_proto_msgTypes[3]
+	mi := &file_gophkeeper_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -208,7 +260,7 @@ func (x *StoreRequest) String() string {
 func (*StoreRequest) ProtoMessage() {}
 
 func (x *StoreRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_gophkeeper_proto_msgTypes[3]
+	mi := &file_gophkeeper_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -221,7 +273,7 @@ func (x *StoreRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use StoreRequest.ProtoReflect.Descriptor instead.
 func (*StoreRequest) Descriptor() ([]byte, []int) {
-	return file_gophkeeper_proto_rawDescGZIP(), []int{3}
+	return file_gophkeeper_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *StoreRequest) GetToken() string {
@@ -247,7 +299,7 @@ type StoreResponse struct {
 
 func (x *StoreResponse) Reset() {
 	*x = StoreResponse{}
-	mi := &file_gophkeeper_proto_msgTypes[4]
+	mi := &file_gophkeeper_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -259,7 +311,7 @@ func (x *StoreResponse) String() string {
 func (*StoreResponse) ProtoMessage() {}
 
 func (x *StoreResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_gophkeeper_proto_msgTypes[4]
+	mi := &file_gophkeeper_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -272,7 +324,7 @@ func (x *StoreResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use StoreResponse.ProtoReflect.Descriptor instead.
 func (*StoreResponse) Descriptor() ([]byte, []int) {
-	return file_gophkeeper_proto_rawDescGZIP(), []int{4}
+	return file_gophkeeper_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *StoreResponse) GetId() int64 {
@@ -293,7 +345,7 @@ type UpdateResponse struct {
 
 func (x *UpdateResponse) Reset() {
 	*x = UpdateResponse{}
-	mi := &file_gophkeeper_proto_msgTypes[5]
+	mi := &file_gophkeeper_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -305,7 +357,7 @@ func (x *UpdateResponse) String() string {
 func (*UpdateResponse) ProtoMessage() {}
 
 func (x *UpdateResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_gophkeeper_proto_msgTypes[5]
+	mi := &file_gophkeeper_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -318,7 +370,7 @@ func (x *UpdateResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateResponse.ProtoReflect.Descriptor instead.
 func (*UpdateResponse) Descriptor() ([]byte, []int) {
-	return file_gophkeeper_proto_rawDescGZIP(), []int{5}
+	return file_gophkeeper_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *UpdateResponse) GetToken() string {
@@ -352,7 +404,7 @@ type RetrieveRequest struct {
 
 func (x *RetrieveRequest) Reset() {
 	*x = RetrieveRequest{}
-	mi := &file_gophkeeper_proto_msgTypes[6]
+	mi := &file_gophkeeper_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -364,7 +416,7 @@ func (x *RetrieveRequest) String() string {
 func (*RetrieveRequest) ProtoMessage() {}
 
 func (x *RetrieveRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_gophkeeper_proto_msgTypes[6]
+	mi := &file_gophkeeper_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -377,7 +429,7 @@ func (x *RetrieveRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RetrieveRequest.ProtoReflect.Descriptor instead.
 func (*RetrieveRequest) Descriptor() ([]byte, []int) {
-	return file_gophkeeper_proto_rawDescGZIP(), []int{6}
+	return file_gophkeeper_proto_rawDescGZIP(), []int{7}
 }
 
 func (x *RetrieveRequest) GetToken() string {
@@ -403,7 +455,7 @@ type RetrieveResponse struct {
 
 func (x *RetrieveResponse) Reset() {
 	*x = RetrieveResponse{}
-	mi := &file_gophkeeper_proto_msgTypes[7]
+	mi := &file_gophkeeper_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -415,7 +467,7 @@ func (x *RetrieveResponse) String() string {
 func (*RetrieveResponse) ProtoMessage() {}
 
 func (x *RetrieveResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_gophkeeper_proto_msgTypes[7]
+	mi := &file_gophkeeper_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -428,7 +480,7 @@ func (x *RetrieveResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RetrieveResponse.ProtoReflect.Descriptor instead.
 func (*RetrieveResponse) Descriptor() ([]byte, []int) {
-	return file_gophkeeper_proto_rawDescGZIP(), []int{7}
+	return file_gophkeeper_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *RetrieveResponse) GetRecord() *DataRecord {
@@ -447,7 +499,7 @@ type ListRequest struct {
 
 func (x *ListRequest) Reset() {
 	*x = ListRequest{}
-	mi := &file_gophkeeper_proto_msgTypes[8]
+	mi := &file_gophkeeper_proto_msgTypes[9]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -459,7 +511,7 @@ func (x *ListRequest) String() string {
 func (*ListRequest) ProtoMessage() {}
 
 func (x *ListRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_gophkeeper_proto_msgTypes[8]
+	mi := &file_gophkeeper_proto_msgTypes[9]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -472,7 +524,7 @@ func (x *ListRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListRequest.ProtoReflect.Descriptor instead.
 func (*ListRequest) Descriptor() ([]byte, []int) {
-	return file_gophkeeper_proto_rawDescGZIP(), []int{8}
+	return file_gophkeeper_proto_rawDescGZIP(), []int{9}
 }
 
 func (x *ListRequest) GetToken() string {
@@ -491,7 +543,7 @@ type ListResponse struct {
 
 func (x *ListResponse) Reset() {
 	*x = ListResponse{}
-	mi := &file_gophkeeper_proto_msgTypes[9]
+	mi := &file_gophkeeper_proto_msgTypes[10]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -503,7 +555,7 @@ func (x *ListResponse) String() string {
 func (*ListResponse) ProtoMessage() {}
 
 func (x *ListResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_gophkeeper_proto_msgTypes[9]
+	mi := &file_gophkeeper_proto_msgTypes[10]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -516,7 +568,7 @@ func (x *ListResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListResponse.ProtoReflect.Descriptor instead.
 func (*ListResponse) Descriptor() ([]byte, []int) {
-	return file_gophkeeper_proto_rawDescGZIP(), []int{9}
+	return file_gophkeeper_proto_rawDescGZIP(), []int{10}
 }
 
 func (x *ListResponse) GetRecords() []*DataRecord {
@@ -536,7 +588,7 @@ type DeleteRequest struct {
 
 func (x *DeleteRequest) Reset() {
 	*x = DeleteRequest{}
-	mi := &file_gophkeeper_proto_msgTypes[10]
+	mi := &file_gophkeeper_proto_msgTypes[11]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -548,7 +600,7 @@ func (x *DeleteRequest) String() string {
 func (*DeleteRequest) ProtoMessage() {}
 
 func (x *DeleteRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_gophkeeper_proto_msgTypes[10]
+	mi := &file_gophkeeper_proto_msgTypes[11]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -561,7 +613,7 @@ func (x *DeleteRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteRequest.ProtoReflect.Descriptor instead.
 func (*DeleteRequest) Descriptor() ([]byte, []int) {
-	return file_gophkeeper_proto_rawDescGZIP(), []int{10}
+	return file_gophkeeper_proto_rawDescGZIP(), []int{11}
 }
 
 func (x *DeleteRequest) GetToken() string {
@@ -578,12 +630,59 @@ func (x *DeleteRequest) GetId() int64 {
 	return 0
 }
 
+type GetVersionResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Ver           *Version               `protobuf:"bytes,1,opt,name=ver,proto3" json:"ver,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetVersionResponse) Reset() {
+	*x = GetVersionResponse{}
+	mi := &file_gophkeeper_proto_msgTypes[12]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetVersionResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetVersionResponse) ProtoMessage() {}
+
+func (x *GetVersionResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_gophkeeper_proto_msgTypes[12]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetVersionResponse.ProtoReflect.Descriptor instead.
+func (*GetVersionResponse) Descriptor() ([]byte, []int) {
+	return file_gophkeeper_proto_rawDescGZIP(), []int{12}
+}
+
+func (x *GetVersionResponse) GetVer() *Version {
+	if x != nil {
+		return x.Ver
+	}
+	return nil
+}
+
 var File_gophkeeper_proto protoreflect.FileDescriptor
 
 const file_gophkeeper_proto_rawDesc = "" +
 	"\n" +
 	"\x10gophkeeper.proto\x12\n" +
-	"gophkeeper\x1a\x1bgoogle/protobuf/empty.proto\"X\n" +
+	"gophkeeper\x1a\x1bgoogle/protobuf/empty.proto\"7\n" +
+	"\aVersion\x12\x18\n" +
+	"\aversion\x18\x01 \x01(\tR\aversion\x12\x12\n" +
+	"\x04date\x18\x02 \x01(\tR\x04date\"X\n" +
 	"\n" +
 	"DataRecord\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\x03R\x02id\x12\x12\n" +
@@ -615,7 +714,9 @@ const file_gophkeeper_proto_rawDesc = "" +
 	"\arecords\x18\x01 \x03(\v2\x16.gophkeeper.DataRecordR\arecords\"5\n" +
 	"\rDeleteRequest\x12\x14\n" +
 	"\x05token\x18\x01 \x01(\tR\x05token\x12\x0e\n" +
-	"\x02id\x18\x02 \x01(\x03R\x02id2\xd6\x03\n" +
+	"\x02id\x18\x02 \x01(\x03R\x02id\";\n" +
+	"\x12GetVersionResponse\x12%\n" +
+	"\x03ver\x18\x01 \x01(\v2\x13.gophkeeper.VersionR\x03ver2\x9c\x04\n" +
 	"\n" +
 	"GophKeeper\x12=\n" +
 	"\bRegister\x12\x17.gophkeeper.AuthRequest\x1a\x18.gophkeeper.AuthResponse\x12:\n" +
@@ -626,7 +727,9 @@ const file_gophkeeper_proto_rawDesc = "" +
 	"\fRetrieveData\x12\x1b.gophkeeper.RetrieveRequest\x1a\x1c.gophkeeper.RetrieveResponse\x12=\n" +
 	"\bListData\x12\x17.gophkeeper.ListRequest\x1a\x18.gophkeeper.ListResponse\x12?\n" +
 	"\n" +
-	"DeleteData\x12\x19.gophkeeper.DeleteRequest\x1a\x16.google.protobuf.EmptyB\x04Z\x02.;b\x06proto3"
+	"DeleteData\x12\x19.gophkeeper.DeleteRequest\x1a\x16.google.protobuf.Empty\x12D\n" +
+	"\n" +
+	"GetVersion\x12\x16.google.protobuf.Empty\x1a\x1e.gophkeeper.GetVersionResponseB\x04Z\x02.;b\x06proto3"
 
 var (
 	file_gophkeeper_proto_rawDescOnce sync.Once
@@ -640,44 +743,49 @@ func file_gophkeeper_proto_rawDescGZIP() []byte {
 	return file_gophkeeper_proto_rawDescData
 }
 
-var file_gophkeeper_proto_msgTypes = make([]protoimpl.MessageInfo, 11)
+var file_gophkeeper_proto_msgTypes = make([]protoimpl.MessageInfo, 13)
 var file_gophkeeper_proto_goTypes = []any{
-	(*DataRecord)(nil),       // 0: gophkeeper.DataRecord
-	(*AuthRequest)(nil),      // 1: gophkeeper.AuthRequest
-	(*AuthResponse)(nil),     // 2: gophkeeper.AuthResponse
-	(*StoreRequest)(nil),     // 3: gophkeeper.StoreRequest
-	(*StoreResponse)(nil),    // 4: gophkeeper.StoreResponse
-	(*UpdateResponse)(nil),   // 5: gophkeeper.UpdateResponse
-	(*RetrieveRequest)(nil),  // 6: gophkeeper.RetrieveRequest
-	(*RetrieveResponse)(nil), // 7: gophkeeper.RetrieveResponse
-	(*ListRequest)(nil),      // 8: gophkeeper.ListRequest
-	(*ListResponse)(nil),     // 9: gophkeeper.ListResponse
-	(*DeleteRequest)(nil),    // 10: gophkeeper.DeleteRequest
-	(*emptypb.Empty)(nil),    // 11: google.protobuf.Empty
+	(*Version)(nil),            // 0: gophkeeper.Version
+	(*DataRecord)(nil),         // 1: gophkeeper.DataRecord
+	(*AuthRequest)(nil),        // 2: gophkeeper.AuthRequest
+	(*AuthResponse)(nil),       // 3: gophkeeper.AuthResponse
+	(*StoreRequest)(nil),       // 4: gophkeeper.StoreRequest
+	(*StoreResponse)(nil),      // 5: gophkeeper.StoreResponse
+	(*UpdateResponse)(nil),     // 6: gophkeeper.UpdateResponse
+	(*RetrieveRequest)(nil),    // 7: gophkeeper.RetrieveRequest
+	(*RetrieveResponse)(nil),   // 8: gophkeeper.RetrieveResponse
+	(*ListRequest)(nil),        // 9: gophkeeper.ListRequest
+	(*ListResponse)(nil),       // 10: gophkeeper.ListResponse
+	(*DeleteRequest)(nil),      // 11: gophkeeper.DeleteRequest
+	(*GetVersionResponse)(nil), // 12: gophkeeper.GetVersionResponse
+	(*emptypb.Empty)(nil),      // 13: google.protobuf.Empty
 }
 var file_gophkeeper_proto_depIdxs = []int32{
-	0,  // 0: gophkeeper.StoreRequest.record:type_name -> gophkeeper.DataRecord
-	0,  // 1: gophkeeper.RetrieveResponse.record:type_name -> gophkeeper.DataRecord
-	0,  // 2: gophkeeper.ListResponse.records:type_name -> gophkeeper.DataRecord
-	1,  // 3: gophkeeper.GophKeeper.Register:input_type -> gophkeeper.AuthRequest
-	1,  // 4: gophkeeper.GophKeeper.Login:input_type -> gophkeeper.AuthRequest
-	3,  // 5: gophkeeper.GophKeeper.StoreData:input_type -> gophkeeper.StoreRequest
-	5,  // 6: gophkeeper.GophKeeper.UpdateData:input_type -> gophkeeper.UpdateResponse
-	6,  // 7: gophkeeper.GophKeeper.RetrieveData:input_type -> gophkeeper.RetrieveRequest
-	8,  // 8: gophkeeper.GophKeeper.ListData:input_type -> gophkeeper.ListRequest
-	10, // 9: gophkeeper.GophKeeper.DeleteData:input_type -> gophkeeper.DeleteRequest
-	2,  // 10: gophkeeper.GophKeeper.Register:output_type -> gophkeeper.AuthResponse
-	2,  // 11: gophkeeper.GophKeeper.Login:output_type -> gophkeeper.AuthResponse
-	4,  // 12: gophkeeper.GophKeeper.StoreData:output_type -> gophkeeper.StoreResponse
-	11, // 13: gophkeeper.GophKeeper.UpdateData:output_type -> google.protobuf.Empty
-	7,  // 14: gophkeeper.GophKeeper.RetrieveData:output_type -> gophkeeper.RetrieveResponse
-	9,  // 15: gophkeeper.GophKeeper.ListData:output_type -> gophkeeper.ListResponse
-	11, // 16: gophkeeper.GophKeeper.DeleteData:output_type -> google.protobuf.Empty
-	10, // [10:17] is the sub-list for method output_type
-	3,  // [3:10] is the sub-list for method input_type
-	3,  // [3:3] is the sub-list for extension type_name
-	3,  // [3:3] is the sub-list for extension extendee
-	0,  // [0:3] is the sub-list for field type_name
+	1,  // 0: gophkeeper.StoreRequest.record:type_name -> gophkeeper.DataRecord
+	1,  // 1: gophkeeper.RetrieveResponse.record:type_name -> gophkeeper.DataRecord
+	1,  // 2: gophkeeper.ListResponse.records:type_name -> gophkeeper.DataRecord
+	0,  // 3: gophkeeper.GetVersionResponse.ver:type_name -> gophkeeper.Version
+	2,  // 4: gophkeeper.GophKeeper.Register:input_type -> gophkeeper.AuthRequest
+	2,  // 5: gophkeeper.GophKeeper.Login:input_type -> gophkeeper.AuthRequest
+	4,  // 6: gophkeeper.GophKeeper.StoreData:input_type -> gophkeeper.StoreRequest
+	6,  // 7: gophkeeper.GophKeeper.UpdateData:input_type -> gophkeeper.UpdateResponse
+	7,  // 8: gophkeeper.GophKeeper.RetrieveData:input_type -> gophkeeper.RetrieveRequest
+	9,  // 9: gophkeeper.GophKeeper.ListData:input_type -> gophkeeper.ListRequest
+	11, // 10: gophkeeper.GophKeeper.DeleteData:input_type -> gophkeeper.DeleteRequest
+	13, // 11: gophkeeper.GophKeeper.GetVersion:input_type -> google.protobuf.Empty
+	3,  // 12: gophkeeper.GophKeeper.Register:output_type -> gophkeeper.AuthResponse
+	3,  // 13: gophkeeper.GophKeeper.Login:output_type -> gophkeeper.AuthResponse
+	5,  // 14: gophkeeper.GophKeeper.StoreData:output_type -> gophkeeper.StoreResponse
+	13, // 15: gophkeeper.GophKeeper.UpdateData:output_type -> google.protobuf.Empty
+	8,  // 16: gophkeeper.GophKeeper.RetrieveData:output_type -> gophkeeper.RetrieveResponse
+	10, // 17: gophkeeper.GophKeeper.ListData:output_type -> gophkeeper.ListResponse
+	13, // 18: gophkeeper.GophKeeper.DeleteData:output_type -> google.protobuf.Empty
+	12, // 19: gophkeeper.GophKeeper.GetVersion:output_type -> gophkeeper.GetVersionResponse
+	12, // [12:20] is the sub-list for method output_type
+	4,  // [4:12] is the sub-list for method input_type
+	4,  // [4:4] is the sub-list for extension type_name
+	4,  // [4:4] is the sub-list for extension extendee
+	0,  // [0:4] is the sub-list for field type_name
 }
 
 func init() { file_gophkeeper_proto_init() }
@@ -691,7 +799,7 @@ func file_gophkeeper_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_gophkeeper_proto_rawDesc), len(file_gophkeeper_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   11,
+			NumMessages:   13,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

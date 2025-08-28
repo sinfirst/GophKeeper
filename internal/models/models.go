@@ -1,5 +1,7 @@
 package models
 
+import "time"
+
 type DataType string
 
 const (
@@ -19,4 +21,14 @@ type Record struct {
 type LoginJSON struct {
 	Login    string `json:"login"`
 	Password string `json:"password"`
+}
+
+type TokenSettings struct {
+	TokenExp  time.Duration
+	SecretKey string
+}
+
+type VersionBuild struct {
+	Version string
+	Date    string
 }

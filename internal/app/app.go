@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/sinfirst/GophKeeper/internal/config"
 	"github.com/sinfirst/GophKeeper/internal/handlers"
 	"github.com/sinfirst/GophKeeper/internal/models"
 	pb "github.com/sinfirst/GophKeeper/proto/gophkeeper"
@@ -24,6 +25,9 @@ func NewGophKeeperServer(handlers handlers.Handler, logger zap.SugaredLogger) pb
 	return &GophKeeperServer{handlers: handlers, logger: logger}
 }
 
+func (s *GophKeeperServer) GetVersion(ctx context.Context, req *emptypb.Empty) (*pb.GetVersionResponse, error) {
+	return &pb.GetVersionResponse{Ver: &pb.Version{Version: config.VersionBuild.Date, Date: config.VersionBuild.Date}}, status.Error(codes.OK, "OK")
+}
 func (s *GophKeeperServer) Register(ctx context.Context, req *pb.AuthRequest) (*pb.AuthResponse, error) {
 	token, err := s.handlers.Register(ctx, req.Username, req.Password)
 	if err = s.errorHandler(err); err != nil {

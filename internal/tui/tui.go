@@ -1,50 +1,49 @@
 package tui
 
 import (
-	"context"
 	"fmt"
 	"os"
 
 	"github.com/gdamore/tcell/v2"
 	"github.com/rivo/tview"
-
-	"github.com/sinfirst/GophKeeper/internal/auth"
+	"github.com/sinfirst/GophKeeper/internal/client"
+	"github.com/sinfirst/GophKeeper/internal/config"
 )
 
 // AuthApp представляет TUI приложение для аутентификации
-type AuthApp struct {
+type TUI struct {
 	app        *tview.Application
 	pages      *tview.Pages
-	authClient *auth.Client
+	client     *client.Client
 	statusText *tview.TextView
 }
 
 // NewAuthApp создает новое приложение
-func NewAuthApp() *AuthApp {
+func NewApp() *TUI {
 	if os.Getenv("TERM") == "" {
 		os.Setenv("TERM", "xterm-256color")
 	}
-	return &AuthApp{
+	return &TUI{
 		app: tview.NewApplication(),
 	}
 }
 
 // Run запускает приложение
-func (a *AuthApp) Run() error {
+func (a *TUI) Run() error {
 	defer func() {
 		if r := recover(); r != nil {
-			fmt.Printf("Panic occurred: %v\n", r)
+			panic(r)
 		}
 	}()
-
-	a.authClient = auth.NewClient("localhost:50051")
+	config := config.NewConfig()
+	a.client = client.NewClient(config.Host)
 	a.setupUI()
 
 	return a.app.SetRoot(a.pages, true).Run()
 }
 
 // setupUI настраивает пользовательский интерфейс
-func (a *AuthApp) setupUI() {
+func (a *TUI) setupUI() {
 	a.pages = tview.NewPages()
 	a.statusText = tview.NewTextView().SetTextAlign(tview.AlignLeft)
 
@@ -61,9 +60,9 @@ func (a *AuthApp) setupUI() {
 }
 
 // createMainMenu создает главное меню
-func (a *AuthApp) createMainMenu() *tview.Flex {
+func (a *TUI) createMainMenu() *tview.Flex {
 	list := tview.NewList()
-	list.SetBorder(true).SetTitle("GophKeeper - GRPC Server")
+	list.SetBorder(true).SetTitle(" Главное меню ")
 
 	list.AddItem("Регистрация", "Создать новый аккаунт", '1', func() {
 		a.pages.SwitchToPage("register")
@@ -86,58 +85,8 @@ func (a *AuthApp) createMainMenu() *tview.Flex {
 	return layout
 }
 
-// createRegisterPage создает страницу регистрации
-func (a *AuthApp) createRegisterPage() *tview.Flex {
-	form := tview.NewForm()
-	form.SetBorder(true).SetTitle(" Регистрация ")
-
-	var username, password string
-
-	form.AddInputField("Логин", "", 20, nil, func(text string) {
-		username = text
-	})
-
-	form.AddPasswordField("Пароль", "", 20, '*', func(text string) {
-		password = text
-	})
-
-	// Кнопки
-	form.AddButton("Зарегистрировать", func() {
-		if username == "" || password == "" {
-			a.showStatus("Ошибка: заполните все поля")
-			return
-		}
-		ctx := context.Background()
-		response, err := a.authClient.Register(ctx, username, password)
-
-		if err != nil {
-			a.showStatus(fmt.Sprintf("Ошибка регистрации: %v", err))
-			return
-		}
-
-		if response.Success {
-			a.showStatus(fmt.Sprintf("Успешная регистрация! UserID: %s", response.UserId))
-			a.pages.SwitchToPage("menu")
-		} else {
-			a.showStatus(fmt.Sprintf("Ошибка: %s", response.Message))
-		}
-	})
-
-	form.AddButton("Назад", func() {
-		a.pages.SwitchToPage("menu")
-	})
-
-	layout := tview.NewFlex().
-		SetDirection(tview.FlexRow).
-		AddItem(a.createHeader(), 3, 1, false).
-		AddItem(form, 0, 1, true).
-		AddItem(a.createStatusBar(), 2, 1, false)
-
-	return layout
-}
-
 // createHeader создает заголовок приложения
-func (a *AuthApp) createHeader() *tview.TextView {
+func (a *TUI) createHeader() *tview.TextView {
 	header := tview.NewTextView().
 		SetTextAlign(tview.AlignCenter).
 		SetText("GophKeeper - GRPC Client").
@@ -148,7 +97,7 @@ func (a *AuthApp) createHeader() *tview.TextView {
 }
 
 // createStatusBar создает строку статуса
-func (a *AuthApp) createStatusBar() *tview.Flex {
+func (a *TUI) createStatusBar() *tview.Flex {
 	statusBar := tview.NewFlex().
 		AddItem(a.statusText, 0, 1, false)
 
@@ -157,20 +106,19 @@ func (a *AuthApp) createStatusBar() *tview.Flex {
 }
 
 // showStatus показывает статусное сообщение
-func (a *AuthApp) showStatus(message string) {
+func (a *TUI) showStatus(message string) {
 	a.app.QueueUpdateDraw(func() {
 		a.statusText.SetText(fmt.Sprintf(" Статус: %s", message))
 	})
 }
 
 // globalInputHandler обрабатывает глобальные горячие клавиши
-func (a *AuthApp) globalInputHandler(event *tcell.EventKey) *tcell.EventKey {
+func (a *TUI) globalInputHandler(event *tcell.EventKey) *tcell.EventKey {
 	switch event.Key() {
 	case tcell.KeyCtrlC:
 		a.app.Stop()
 		return nil
 	case tcell.KeyEsc:
-		// Возврат в главное меню с любой страницы
 		if a.pages.HasPage("menu") {
 			a.pages.SwitchToPage("menu")
 		}
