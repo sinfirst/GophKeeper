@@ -63,6 +63,15 @@ func (h *Handler) Register(ctx context.Context, login, password string) (string,
 }
 
 func (h *Handler) Login(ctx context.Context, login, password string) (string, error) {
+	exist, err := h.storage.CheckUsernameExists(ctx, login)
+	if err != nil {
+		return "", err
+	}
+
+	if exist {
+		return "", fmt.Errorf("not found")
+	}
+
 	passwordFromBD, err := h.storage.GetUserPassword(ctx, login)
 	if err != nil {
 		return "", fmt.Errorf("unauthenticated")

@@ -23,6 +23,12 @@ type LoginJSON struct {
 	Password string `json:"password"`
 }
 
+type CardJSON struct {
+	Number string `json:"number"`
+	Date   string `json:"date"`
+	CVV    string `json:"cvv"`
+}
+
 type TokenSettings struct {
 	TokenExp  time.Duration
 	SecretKey string

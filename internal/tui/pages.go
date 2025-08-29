@@ -28,19 +28,15 @@ func (a *TUI) createRegisterPage() *tview.Flex {
 			return
 		}
 		ctx := context.Background()
-		response, err := a.client.Register(ctx, username, password)
+		err := a.client.Register(ctx, username, password)
 
 		if err != nil {
 			a.showStatus(fmt.Sprintf("Ошибка регистрации: %v", err))
 			return
 		}
 
-		if response.Success {
-			a.showStatus("Успешная регистрация!")
-			a.pages.SwitchToPage("menu")
-		} else {
-			a.showStatus(fmt.Sprintf("Ошибка: %s", response.Message))
-		}
+		a.showStatus("Успешная регистрация!")
+		a.pages.SwitchToPage("menu")
 	})
 
 	form.AddButton("Назад", func() {
