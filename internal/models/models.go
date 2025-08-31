@@ -2,13 +2,11 @@ package models
 
 import "time"
 
-type DataType string
-
 const (
-	Login  DataType = "LOGIN"
-	Text   DataType = "TEXT"
-	Card   DataType = "CARD"
-	Binary DataType = "BINARY"
+	Login  string = "LOGIN"
+	Text   string = "TEXT"
+	Card   string = "CARD"
+	Binary string = "BINARY"
 )
 
 type Record struct {

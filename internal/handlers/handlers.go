@@ -18,7 +18,7 @@ type Storage interface {
 	StoreDataToDB(ctx context.Context, record models.Record, username string) (int, error)
 	RetrieveDataFromDB(ctx context.Context, id int) (models.Record, error)
 	GetUserByDataID(ctx context.Context, id int) (string, error)
-	UpdateDataInDB(ctx context.Context, id int) error
+	UpdateDataInDB(ctx context.Context, id int, meta string, data []byte) error
 	GetListData(ctx context.Context, username string) ([]models.Record, error)
 	CheckRecordExist(ctx context.Context, id int) (bool, error)
 	DeleteDataFromDB(ctx context.Context, id int) error
@@ -104,12 +104,12 @@ func (h *Handler) RetrieveData(ctx context.Context, token string, id int) (model
 	return h.storage.RetrieveDataFromDB(ctx, id)
 }
 
-func (h *Handler) UpdateData(ctx context.Context, token string, id int, data []byte) error {
+func (h *Handler) UpdateData(ctx context.Context, token, meta string, id int, data []byte) error {
 	_, err := h.checkAccess(ctx, token, id)
 	if err != nil {
 		return err
 	}
-	return h.storage.UpdateDataInDB(ctx, id)
+	return h.storage.UpdateDataInDB(ctx, id, meta, data)
 
 }
 

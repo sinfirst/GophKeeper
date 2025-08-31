@@ -118,10 +118,10 @@ func (p *PGDB) RetrieveDataFromDB(ctx context.Context, id int) (models.Record, e
 	return record, nil
 }
 
-func (p *PGDB) UpdateDataInDB(ctx context.Context, id int) error {
-	query := `UPDATE records SET user_data = $1
-			WHERE id = $2`
-	result, err := p.db.Exec(ctx, query, id)
+func (p *PGDB) UpdateDataInDB(ctx context.Context, id int, meta string, data []byte) error {
+	query := `UPDATE records SET user_data = $1 AND meta = $2 
+			WHERE id = $3`
+	result, err := p.db.Exec(ctx, query, data, meta, id)
 	if err != nil {
 		return err
 	}

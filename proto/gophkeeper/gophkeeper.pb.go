@@ -339,6 +339,7 @@ type UpdateResponse struct {
 	Token         string                 `protobuf:"bytes,1,opt,name=token,proto3" json:"token,omitempty"`
 	Id            int64                  `protobuf:"varint,2,opt,name=id,proto3" json:"id,omitempty"`
 	Data          []byte                 `protobuf:"bytes,3,opt,name=data,proto3" json:"data,omitempty"`
+	Meta          string                 `protobuf:"bytes,4,opt,name=meta,proto3" json:"meta,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -392,6 +393,13 @@ func (x *UpdateResponse) GetData() []byte {
 		return x.Data
 	}
 	return nil
+}
+
+func (x *UpdateResponse) GetMeta() string {
+	if x != nil {
+		return x.Meta
+	}
+	return ""
 }
 
 type RetrieveRequest struct {
@@ -698,11 +706,12 @@ const file_gophkeeper_proto_rawDesc = "" +
 	"\x05token\x18\x01 \x01(\tR\x05token\x12.\n" +
 	"\x06record\x18\x02 \x01(\v2\x16.gophkeeper.DataRecordR\x06record\"\x1f\n" +
 	"\rStoreResponse\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\x03R\x02id\"J\n" +
+	"\x02id\x18\x01 \x01(\x03R\x02id\"^\n" +
 	"\x0eUpdateResponse\x12\x14\n" +
 	"\x05token\x18\x01 \x01(\tR\x05token\x12\x0e\n" +
 	"\x02id\x18\x02 \x01(\x03R\x02id\x12\x12\n" +
-	"\x04data\x18\x03 \x01(\fR\x04data\"7\n" +
+	"\x04data\x18\x03 \x01(\fR\x04data\x12\x12\n" +
+	"\x04meta\x18\x04 \x01(\tR\x04meta\"7\n" +
 	"\x0fRetrieveRequest\x12\x14\n" +
 	"\x05token\x18\x01 \x01(\tR\x05token\x12\x0e\n" +
 	"\x02id\x18\x02 \x01(\x03R\x02id\"B\n" +

@@ -71,7 +71,7 @@ func (c *Client) Login(ctx context.Context, username, password string) error {
 }
 
 func (c *Client) StoreData(ctx context.Context, typeRecord, meta string, data []byte) (int, error) {
-	record := &pb.DataRecord{Type: "LOGIN", Data: data, Meta: meta}
+	record := &pb.DataRecord{Type: typeRecord, Data: data, Meta: meta}
 	resp, err := c.client.StoreData(ctx, &pb.StoreRequest{Token: c.token, Record: record})
 	if status, ok := status.FromError(err); ok {
 		switch status.Code() {
@@ -106,7 +106,7 @@ func (c *Client) RetrieveData(ctx context.Context, id string) (models.Record, er
 	return models.Record{Id: int(resp.Record.Id), TypeRecord: resp.Record.Type, Data: resp.Record.Data, Meta: resp.Record.Meta}, nil
 }
 
-func (c *Client) UpdateData(ctx context.Context, id string, data []byte) error {
+func (c *Client) UpdateData(ctx context.Context, id, meta string, data []byte) error {
 	intID, err := strconv.ParseInt(id, 10, 64)
 	if err != nil {
 		return fmt.Errorf("введите число")

@@ -63,7 +63,7 @@ func (s *GophKeeperServer) RetrieveData(ctx context.Context, req *pb.RetrieveReq
 	return &pb.RetrieveResponse{Record: &pb.DataRecord{Type: record.TypeRecord, Data: record.Data, Meta: record.Meta}}, status.Error(codes.OK, "OK")
 }
 func (s *GophKeeperServer) UpdateData(ctx context.Context, req *pb.UpdateResponse) (*emptypb.Empty, error) {
-	err := s.handlers.UpdateData(ctx, req.Token, int(req.Id), req.Data)
+	err := s.handlers.UpdateData(ctx, req.Token, req.Meta, int(req.Id), req.Data)
 	if err = s.errorHandler(err); err != nil {
 		return nil, err
 	}

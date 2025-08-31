@@ -5,20 +5,20 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"log"
-	"os"
 
+	"github.com/sinfirst/GophKeeper/internal/client"
+	"github.com/sinfirst/GophKeeper/internal/config"
 	"github.com/sinfirst/GophKeeper/internal/models"
 	"github.com/sinfirst/GophKeeper/internal/tui"
 	pb "github.com/sinfirst/GophKeeper/proto/gophkeeper"
 )
 
 func main() {
-	app := tui.NewApp()
-	if err := app.Run(); err != nil {
-		log.Fatal(err)
-		os.Exit(1)
-	}
+	config := config.NewConfig()
+	client := client.NewClient(config.Host)
+	t := tui.TUI{Client: client}
+	tui.StartTUI(t)
+
 }
 func TestFunc(c pb.GophKeeperClient) {
 	token, err := c.Register(context.Background(), &pb.AuthRequest{Username: "sinfirst2", Password: "qwerty12345"})
