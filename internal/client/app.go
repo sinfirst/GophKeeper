@@ -112,7 +112,7 @@ func (c *Client) UpdateData(ctx context.Context, id, meta string, data []byte) e
 		return fmt.Errorf("введите число")
 	}
 
-	_, err = c.client.UpdateData(ctx, &pb.UpdateResponse{Token: c.token, Id: intID, Data: data})
+	_, err = c.client.UpdateData(ctx, &pb.UpdateResponse{Token: c.token, Id: intID, Meta: meta, Data: data})
 	if status, ok := status.FromError(err); ok {
 		switch status.Code() {
 		case codes.Unauthenticated:

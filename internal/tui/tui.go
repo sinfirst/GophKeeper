@@ -12,7 +12,7 @@ import (
 
 const (
 	menu     string = "1. Регистрация \n2. Вход в аккаунт \n3. Сохранение данных \n4. Извлечение данных \n5. Лист данных \n6. Обновление данных \n7. Удаление данных \n8. Получение версии программы \n0. Выход из программы\n"
-	typeData string = "1. Пара логин-пароль \n2. Текстовые данные \n3. Банковская карта \n4. Бинарные данные \n 0. Назад \n"
+	typeData string = "1. Пара логин-пароль \n2. Текстовые данные \n3. Банковская карта \n4. Бинарные данные \n0. Назад \n"
 )
 
 type TUI struct {
@@ -20,9 +20,8 @@ type TUI struct {
 }
 
 func StartTUI(tui TUI) {
-	var chooseInt int = 1
 	var choose string
-	for chooseInt != 0 {
+	for {
 		fmt.Print(menu)
 		fmt.Print("Введите число: ")
 		fmt.Scan(&choose)
@@ -49,12 +48,15 @@ func StartTUI(tui TUI) {
 			tui.deleteData()
 		case 8:
 			tui.getVersion()
+		case 0:
+			fmt.Println("До новых встреч!")
+			tui.Client.Close()
+			return
 		default:
 			fmt.Println("Число не входит в пункты меню!")
 		}
 	}
-	fmt.Println("Счастливо!")
-	tui.Client.Close()
+
 }
 
 func (t *TUI) auth(typeAuth int) {
@@ -80,9 +82,8 @@ func (t *TUI) auth(typeAuth int) {
 }
 
 func (t *TUI) store() {
-	var chooseInt int = 1
 	var choose string
-	for chooseInt != 0 {
+	for {
 		fmt.Print(typeData)
 		fmt.Print("Введите число: ")
 		fmt.Scan(&choose)
@@ -133,6 +134,8 @@ func (t *TUI) store() {
 			}
 			fmt.Println("Успешено ID сохраненных данных: ", id)
 			return
+		case 0:
+			return
 		default:
 			fmt.Println("Число не входит в пункты типа данных!")
 		}
@@ -163,7 +166,7 @@ func (t *TUI) listData() {
 	}
 
 	for index, value := range records {
-		fmt.Printf("Номер: %d\n", index)
+		fmt.Printf("Номер: %d\n", index+1)
 		err = separateDataByTypeToOutput(value)
 		if err != nil {
 			fmt.Println("Ошибка, попробуйте еще раз")
@@ -216,7 +219,7 @@ func (t *TUI) getVersion() {
 		fmt.Println("Ошибка, попробуйте еще раз")
 		return
 	}
-	fmt.Printf("Версия сборки: %s\n Дата: %s\n", ver.Version, ver.Date)
+	fmt.Printf("Версия сборки: %s\nДата: %s\n", ver.Version, ver.Date)
 }
 
 func separateDataByTypeToOutput(record models.Record) error {

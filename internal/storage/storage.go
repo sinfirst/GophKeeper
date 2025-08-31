@@ -119,7 +119,7 @@ func (p *PGDB) RetrieveDataFromDB(ctx context.Context, id int) (models.Record, e
 }
 
 func (p *PGDB) UpdateDataInDB(ctx context.Context, id int, meta string, data []byte) error {
-	query := `UPDATE records SET user_data = $1 AND meta = $2 
+	query := `UPDATE records SET user_data = $1, meta = $2 
 			WHERE id = $3`
 	result, err := p.db.Exec(ctx, query, data, meta, id)
 	if err != nil {
@@ -166,7 +166,7 @@ func (p *PGDB) CheckRecordExist(ctx context.Context, id int) (bool, error) {
 		)`
 	err := p.db.QueryRow(ctx, query, id).Scan(&exists)
 	if err != nil {
-		return false, fmt.Errorf("checking user existence: %w", err)
+		return false, fmt.Errorf("checking existence: %w", err)
 	}
 	return exists, nil
 }

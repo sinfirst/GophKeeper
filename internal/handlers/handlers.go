@@ -68,7 +68,7 @@ func (h *Handler) Login(ctx context.Context, login, password string) (string, er
 		return "", err
 	}
 
-	if exist {
+	if !exist {
 		return "", fmt.Errorf("not found")
 	}
 
@@ -109,6 +109,15 @@ func (h *Handler) UpdateData(ctx context.Context, token, meta string, id int, da
 	if err != nil {
 		return err
 	}
+
+	exist, err := h.storage.CheckRecordExist(ctx, id)
+	if err != nil {
+		return err
+	}
+
+	if !exist {
+		return fmt.Errorf("not found")
+	}
 	return h.storage.UpdateDataInDB(ctx, id, meta, data)
 
 }
@@ -126,11 +135,13 @@ func (h *Handler) DeleteData(ctx context.Context, token string, id int) error {
 	if err != nil {
 		return err
 	}
+
 	exist, err := h.storage.CheckRecordExist(ctx, id)
 	if err != nil {
 		return err
 	}
-	if exist {
+
+	if !exist {
 		return fmt.Errorf("not found")
 	}
 	return h.storage.DeleteDataFromDB(ctx, id)

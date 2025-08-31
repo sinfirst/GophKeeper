@@ -26,7 +26,7 @@ func NewGophKeeperServer(handlers handlers.Handler, logger zap.SugaredLogger) pb
 }
 
 func (s *GophKeeperServer) GetVersion(ctx context.Context, req *emptypb.Empty) (*pb.GetVersionResponse, error) {
-	return &pb.GetVersionResponse{Ver: &pb.Version{Version: config.VersionBuild.Date, Date: config.VersionBuild.Date}}, status.Error(codes.OK, "OK")
+	return &pb.GetVersionResponse{Ver: &pb.Version{Version: config.VersionBuild.Version, Date: config.VersionBuild.Date}}, status.Error(codes.OK, "OK")
 }
 func (s *GophKeeperServer) Register(ctx context.Context, req *pb.AuthRequest) (*pb.AuthResponse, error) {
 	token, err := s.handlers.Register(ctx, req.Username, req.Password)
