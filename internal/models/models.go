@@ -2,6 +2,17 @@ package models
 
 import "time"
 
+type AppError string
+
+func (e AppError) Error() string { return string(e) }
+
+const (
+	ErrUnauthenticated AppError = "unauthenticated"
+	ErrConflict        AppError = "conflict"
+	ErrAccessDenied    AppError = "access denied"
+	ErrNotFound        AppError = "not found"
+)
+
 const (
 	Login  string = "LOGIN"
 	Text   string = "TEXT"
