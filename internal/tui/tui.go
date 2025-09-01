@@ -214,12 +214,12 @@ func (t *TUI) deleteData() {
 }
 
 func (t *TUI) getVersion() {
-	ver, err := t.Client.GetVersion(context.Background())
+	version, date, err := t.Client.GetVersion(context.Background())
 	if err != nil {
 		fmt.Println("Ошибка, попробуйте еще раз")
 		return
 	}
-	fmt.Printf("Версия сборки: %s\nДата: %s\n", ver.Version, ver.Date)
+	fmt.Printf("Версия сборки: %s\nДата: %s\n", version, date)
 }
 
 func separateDataByTypeToOutput(record models.Record) error {

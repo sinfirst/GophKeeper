@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"context"
-	"fmt"
 
 	"golang.org/x/crypto/bcrypt"
 
@@ -41,7 +40,7 @@ func (h *Handler) Register(ctx context.Context, login, password string) (string,
 	}
 
 	if exist {
-		return "", fmt.Errorf("conflict")
+		return "", models.ErrConflict
 	}
 
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
@@ -69,16 +68,16 @@ func (h *Handler) Login(ctx context.Context, login, password string) (string, er
 	}
 
 	if !exist {
-		return "", fmt.Errorf("not found")
+		return "", models.ErrNotFound
 	}
 
 	passwordFromBD, err := h.storage.GetUserPassword(ctx, login)
 	if err != nil {
-		return "", fmt.Errorf("unauthenticated")
+		return "", models.ErrUnauthenticated
 	}
 	err = bcrypt.CompareHashAndPassword([]byte(passwordFromBD), []byte(password))
 	if err != nil {
-		return "", fmt.Errorf("unauthenticated")
+		return "", models.ErrUnauthenticated
 	}
 	token, err := auth.BuildJWTString(login)
 	if err != nil {
@@ -91,7 +90,7 @@ func (h *Handler) Login(ctx context.Context, login, password string) (string, er
 func (h *Handler) StoreData(ctx context.Context, token string, record models.Record) (int, error) {
 	username, err := auth.CheckToken(token)
 	if err != nil {
-		return 0, fmt.Errorf("unauthenticated")
+		return 0, models.ErrUnauthenticated
 	}
 	return h.storage.StoreDataToDB(ctx, record, username)
 }
@@ -116,7 +115,7 @@ func (h *Handler) UpdateData(ctx context.Context, token, meta string, id int, da
 	}
 
 	if !exist {
-		return fmt.Errorf("not found")
+		return models.ErrConflict
 	}
 	return h.storage.UpdateDataInDB(ctx, id, meta, data)
 
@@ -125,7 +124,7 @@ func (h *Handler) UpdateData(ctx context.Context, token, meta string, id int, da
 func (h *Handler) ListData(ctx context.Context, token string) ([]models.Record, error) {
 	username, err := auth.CheckToken(token)
 	if err != nil {
-		return nil, fmt.Errorf("unauthenticated")
+		return nil, models.ErrUnauthenticated
 	}
 	return h.storage.GetListData(ctx, username)
 }
@@ -142,7 +141,7 @@ func (h *Handler) DeleteData(ctx context.Context, token string, id int) error {
 	}
 
 	if !exist {
-		return fmt.Errorf("not found")
+		return models.ErrConflict
 	}
 	return h.storage.DeleteDataFromDB(ctx, id)
 }
@@ -150,12 +149,12 @@ func (h *Handler) DeleteData(ctx context.Context, token string, id int) error {
 func (h *Handler) checkAccess(ctx context.Context, token string, id int) (string, error) {
 	username, err := auth.CheckToken(token)
 	if err != nil {
-		return username, fmt.Errorf("unauthenticated")
+		return username, models.ErrUnauthenticated
 	}
 
 	usernameFromBD, err := h.storage.GetUserByDataID(ctx, id)
 	if username != usernameFromBD {
-		return username, fmt.Errorf("access denied")
+		return username, models.ErrAccessDenied
 	}
 	if err != nil {
 		return "", err

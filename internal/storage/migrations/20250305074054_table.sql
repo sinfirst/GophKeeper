@@ -13,7 +13,7 @@ CREATE TYPE record_type AS ENUM (
 );
 
 CREATE TABLE IF NOT EXISTS records (
-    id INT NOT NULL PRIMARY KEY,
+    id SERIAL NOT NULL PRIMARY KEY,
     type_record record_type NOT NULL,
     user_data BYTEA NOT NULL,
     meta TEXT,

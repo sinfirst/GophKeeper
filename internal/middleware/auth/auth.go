@@ -16,12 +16,12 @@ type Claims struct {
 func BuildJWTString(user string) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, Claims{
 		RegisteredClaims: jwt.RegisteredClaims{
-			ExpiresAt: jwt.NewNumericDate(time.Now().Add(config.TokenSetting.TokenExp)),
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(config.TokenExp)),
 		},
 		Username: user,
 	})
 
-	tokenString, err := token.SignedString([]byte(config.TokenSetting.SecretKey))
+	tokenString, err := token.SignedString([]byte(config.SecretKey))
 
 	if err != nil {
 		return "", err
@@ -37,7 +37,7 @@ func CheckToken(tokenFromReq string) (string, error) {
 			if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
 				return nil, fmt.Errorf("unexpected signing method: %v", t.Header["alg"])
 			}
-			return []byte(config.TokenSetting.SecretKey), nil
+			return []byte(config.SecretKey), nil
 		})
 	if err != nil {
 		return "", err
