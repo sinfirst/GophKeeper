@@ -177,15 +177,15 @@ func (c *Client) DeleteData(ctx context.Context, id string) error {
 	return nil
 }
 
-func (c *Client) GetVersion(ctx context.Context) (models.VersionBuild, error) {
+func (c *Client) GetVersion(ctx context.Context) (string, string, error) {
 	resp, err := c.client.GetVersion(ctx, &emptypb.Empty{})
 	if status, ok := status.FromError(err); ok {
 		switch status.Code() {
 		case codes.Internal:
-			return models.VersionBuild{}, fmt.Errorf("ошибка сервера")
+			return "", "", fmt.Errorf("ошибка сервера")
 		}
 	}
-	return models.VersionBuild{Version: resp.Ver.Version, Date: resp.Ver.Date}, nil
+	return resp.Ver.Version, resp.Ver.Date, nil
 }
 
 // Close закрывает соединение

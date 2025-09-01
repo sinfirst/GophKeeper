@@ -21,7 +21,6 @@ import (
 type PGDB struct {
 	logger zap.SugaredLogger
 	db     *pgxpool.Pool
-	idData int
 }
 
 // NewPGDB конструктор для структуры
@@ -32,7 +31,7 @@ func NewPGDB(config config.Config, logger zap.SugaredLogger) *PGDB {
 		logger.Errorw("Problem with connecting to db ", err)
 		return nil
 	}
-	return &PGDB{logger: logger, db: db, idData: 1}
+	return &PGDB{logger: logger, db: db}
 }
 
 func (p *PGDB) CheckUsernameExists(ctx context.Context, username string) (bool, error) {
@@ -79,14 +78,20 @@ func (p *PGDB) GetUserPassword(ctx context.Context, username string) (string, er
 }
 
 func (p *PGDB) StoreDataToDB(ctx context.Context, record models.Record, username string) (int, error) {
-	query := `INSERT INTO records (id, type_record, user_data, meta, username)
-				VALUES ($1, $2, $3, $4, $5)`
-	_, err := p.db.Exec(ctx, query, p.idData, record.TypeRecord, record.Data, record.Meta, username)
+	var id int
+	query := `INSERT INTO records (type_record, user_data, meta, username)
+				VALUES ($1, $2, $3, $4)`
+	_, err := p.db.Exec(ctx, query, record.TypeRecord, record.Data, record.Meta, username)
 	if err != nil {
-		return p.idData, err
+		return 0, err
 	}
-	p.idData++
-	return p.idData - 1, nil
+	query = `SELECT id FROM records WHERE username = $1`
+	row := p.db.QueryRow(ctx, query, username)
+	err = row.Scan(&id)
+	if err != nil {
+		return 0, err
+	}
+	return id, nil
 }
 
 func (p *PGDB) GetUserByDataID(ctx context.Context, id int) (string, error) {
