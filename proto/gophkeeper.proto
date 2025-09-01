@@ -1,0 +1,81 @@
+syntax = "proto3";
+
+package gophkeeper;
+
+import "google/protobuf/empty.proto";
+
+option go_package = ".;";
+
+message Version{
+  string version = 1;
+  string date = 2;
+}
+
+message DataRecord {
+  int64 id = 1;
+  string type = 2;
+  bytes data = 3;
+  string meta = 4;
+}
+
+message AuthRequest {
+  string username = 1;
+  string password = 2;
+}
+
+message AuthResponse {
+  string token = 1;
+}
+
+message StoreRequest {
+  string token = 1;
+  DataRecord record = 2;
+}
+
+message StoreResponse {
+  int64 id = 1;
+}
+
+message UpdateResponse{
+  string token = 1;
+  int64 id = 2;
+  bytes data = 3;
+  string meta = 4;
+}
+
+message RetrieveRequest {
+  string token = 1;
+  int64 id = 2;
+}
+
+message RetrieveResponse {
+  DataRecord record = 1;
+}
+
+message ListRequest {
+  string token = 1;
+}
+
+message ListResponse {
+  repeated DataRecord records = 1;
+}
+
+message DeleteRequest {
+  string token = 1;
+  int64 id = 2;
+}
+
+message GetVersionResponse {
+  Version ver = 1;
+}
+
+service GophKeeper {
+  rpc Register (AuthRequest) returns (AuthResponse);
+  rpc Login (AuthRequest) returns (AuthResponse);
+  rpc StoreData (StoreRequest) returns (StoreResponse);
+  rpc UpdateData(UpdateResponse) returns (google.protobuf.Empty);
+  rpc RetrieveData (RetrieveRequest) returns (RetrieveResponse);
+  rpc ListData (ListRequest) returns (ListResponse);
+  rpc DeleteData (DeleteRequest) returns (google.protobuf.Empty);
+  rpc GetVersion (google.protobuf.Empty) returns (GetVersionResponse);
+}
