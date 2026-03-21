@@ -3,7 +3,6 @@ package app
 import (
 	"context"
 	"errors"
-	"fmt"
 
 	"github.com/sinfirst/GophKeeper/internal/config"
 	"github.com/sinfirst/GophKeeper/internal/handlers"
@@ -26,7 +25,7 @@ func NewGophKeeperServer(handlers handlers.Handler, logger zap.SugaredLogger) pb
 }
 
 func (s *GophKeeperServer) GetVersion(ctx context.Context, req *emptypb.Empty) (*pb.GetVersionResponse, error) {
-	return &pb.GetVersionResponse{Ver: &pb.Version{Version: config.VersionBuild.Version, Date: config.VersionBuild.Date}}, status.Error(codes.OK, "OK")
+	return &pb.GetVersionResponse{Ver: &pb.Version{Version: config.VersionBuild, Date: config.DateBuild}}, status.Error(codes.OK, "OK")
 }
 func (s *GophKeeperServer) Register(ctx context.Context, req *pb.AuthRequest) (*pb.AuthResponse, error) {
 	token, err := s.handlers.Register(ctx, req.Username, req.Password)
@@ -100,15 +99,21 @@ func (s *GophKeeperServer) DeleteData(ctx context.Context, req *pb.DeleteRequest
 }
 
 func (s *GophKeeperServer) errorHandler(err error) error {
-	if errors.Is(err, fmt.Errorf("unauthenticated")) {
-		return status.Error(codes.Unauthenticated, "unauthenticated")
-	} else if errors.Is(err, fmt.Errorf("conflict")) {
-		return status.Error(codes.AlreadyExists, "conflict")
-	} else if errors.Is(err, fmt.Errorf("access denied")) {
-		return status.Error(codes.PermissionDenied, "access denied")
-	} else if errors.Is(err, fmt.Errorf("not found")) {
-		return status.Error(codes.NotFound, "not found")
-	} else if err != nil {
+	var appErr models.AppError
+	if errors.As(err, &appErr) {
+		switch appErr {
+		case models.ErrUnauthenticated:
+			return status.Error(codes.Unauthenticated, string(appErr))
+		case models.ErrConflict:
+			return status.Error(codes.AlreadyExists, string(appErr))
+		case models.ErrAccessDenied:
+			return status.Error(codes.PermissionDenied, string(appErr))
+		case models.ErrNotFound:
+			return status.Error(codes.NotFound, string(appErr))
+		}
+	}
+
+	if err != nil {
 		s.logger.Errorf("err: %v", err)
 		return status.Error(codes.Internal, "Server problem")
 	}

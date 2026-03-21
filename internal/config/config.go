@@ -6,18 +6,13 @@ import (
 	"time"
 
 	"github.com/caarlos0/env"
-	"github.com/sinfirst/GophKeeper/internal/models"
 )
 
-var (
-	TokenSetting models.TokenSettings = models.TokenSettings{
-		TokenExp:  time.Hour * 12,
-		SecretKey: "supersecretkey",
-	}
-	VersionBuild models.VersionBuild = models.VersionBuild{
-		Version: "0.1 beta",
-		Date:    "28.08.2025",
-	}
+const (
+	TokenExp     time.Duration = time.Hour * 12
+	SecretKey    string        = "supersecretkey"
+	VersionBuild string        = "0.1 beta"
+	DateBuild    string        = "28.08.2025"
 )
 
 type Config struct {
